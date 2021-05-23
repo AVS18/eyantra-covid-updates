@@ -25,3 +25,15 @@ class NotifySlot(models.Model):
     pincode = models.IntegerField()
     state_id = models.IntegerField()
     district_id = models.IntegerField()
+
+class Profile(models.Model):
+    user = models.OneToOneField(User,on_delete=models.CASCADE)
+    address1 = models.CharField(max_length=1000)
+    address2 = models.CharField(max_length=1000)
+    street =  models.CharField(max_length=1000)
+    city = models.CharField(max_length=1000)
+    state = models.CharField(max_length=1000)
+    pincode = models.IntegerField()
+    covid = models.BooleanField()
+    skype = models.CharField(blank=True,max_length=200)
+    mobile = models.BigIntegerField(null=True)

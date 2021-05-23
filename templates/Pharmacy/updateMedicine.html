@@ -1,0 +1,52 @@
+{%extends "Pharmacy/dashboard.html"%}
+{%block content%}
+<br>
+<form action="/pharmacy/updateMedicine/{{id}}" method="post" enctype="multipart/form-data">
+    {%csrf_token%}
+    <div class="row">
+        <div class="col-sm">
+            <div class="form-group">
+                <label for="name">Medicine Name</label>
+                <input type="text" name="name" id="name" class="form-control" value="{{item.name}}" readonly>
+            </div>
+        </div>
+        <div class="col-sm">
+            <div class="form-group">
+                <label for="image">Medicine Image</label><br>
+                <a href="{{item.image.url}}" target="_blank">Click Here</a>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm">
+            <div class="form-group">
+                <label for="Desc">Description</label>
+                <input type="text" name="description" id="Desc" class="form-control" value="{{item.description}}" readonly>
+            </div>
+        </div>
+        <div class="col-sm">
+            <div class="form-group">
+                <label for="cost">Cost</label>
+                <input type="number" name="cost" id="cost" class="form-control" value="{{item.cost}}" required>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-sm">
+            <div class="form-group">
+                <label for="date">Expiry Date</label>
+                <input type="date" name="expiry_date" id="date" class="form-control" value="{{item.expiry_date}}" required>
+                <small>Currently it is {{item.expiry_date}}</small>
+            </div>
+        </div>
+        <div class="col-sm">
+            <div class="form-group">
+                <label for="expected_delivery">Expected Delivery (in Days)</label>
+                <input type="number" name="expected_delivery" id="expected_delivery" class="form-control" value="{{item.expected_delivery}}" required>
+            </div>
+        </div>
+    </div>
+    <input type="submit" value="Update Medicine" class="btn btn-outline-primary">
+</form>
+{%endblock%}

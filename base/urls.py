@@ -13,5 +13,7 @@ urlpatterns = [
     path('cowinSlot',views.cowinSlot,name="cowinSlot"),
     path('getSlotDay',views.getSlotDay,name="getSlotDay"),
     path('getSlotWithDistrict',views.getSlotWithDistrict,name="getSlotWithDistrict"),
-    path('notify',views.notify,name="notify")
+    path('notify',views.notify,name="notify"),
+    path('addProfile',views.addProfile,name="addProfile"),
+    path('updateProfile',views.updateProfile,name="updateProfile")
 ]

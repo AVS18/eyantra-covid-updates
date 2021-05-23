@@ -1,0 +1,60 @@
+{%extends "Patient/dashboard.html"%}
+{%block content%}
+<br>
+<form action="/patient/filterMedicine" style="text-align: center;" method="GET" >
+    {%csrf_token%}
+    <div class="row">
+        <div class="col-sm-3">
+            <div class="form-group">
+                <label for="name">Name</label>
+                <input type="text" name="name" class="form-control" id="name">
+            </div>
+        </div>
+        <div class="col-sm-3">
+            <div class="form-group">
+                <label for="delivery">Expected Delivery</label>
+                <input type="number" name="expected_delivery" id="delivery" class="form-control">
+            </div>
+        </div>
+        <div class="col-sm-3">
+            <div class="form-group">
+                <label for="cost">Maximum Cost</label>
+                <input type="number" name="cost" id="cost" class="form-control">
+            </div>
+        </div>
+        <div class="col-sm-3">
+            <div class="form-group"><br>
+                <input type="submit" value="Filter" class="btn btn-outline-success" />
+            </div>
+        </div>
+    </div>
+</form>        
+<div class="row">
+    {%if len == 0%}
+    <p style="text-align: center;">No Medicines Available</p>
+    {%else%}
+    {%for item in obj%}
+    <div class="col-sm-4">
+        <div class="card-body">
+            <img class="card-img-top" src="{{item.image.url}}" width="200px" height="200px" alt="Card image cap">
+            <h5 class="card-title">{{item.name}}</h5>
+            <p class="card-text">
+                <p>{{item.description}}</p>
+                <ul class="list-group">
+                    <li class="list-group-item">Selled By : {{item.user.first_name}}</li>
+                    <li class="list-group-item">Expected Delivery: {{item.expected_delivery}}</li>
+                    <li class="list-group-item">Expiry Date : {{item.expiry_date}}</li>
+                    <li class="list-group-item">Cost: {{item.cost}}</li>
+                </ul>
+            </p>
+            <div class="row">
+                <div class="col-sm">
+                    <center><a href="/patient/placeOrder" class="btn btn-outline-info">Place Order</a></center>
+                </div>
+            </div>
+        </div>
+    </div>
+    {%endfor%}
+    {%endif%}
+</div>
+{%endblock%}

@@ -2,7 +2,7 @@ from django.shortcuts import render,redirect
 from django.core.mail import send_mail
 import random
 from django.contrib.auth.hashers import make_password
-from .models import NotifySlot, SiteAnnouncement
+from .models import NotifySlot, SiteAnnouncement,Profile
 from django.contrib import messages,auth
 from django.contrib.auth import authenticate
 from .models import Contact, User, NotifySlot
@@ -30,7 +30,6 @@ def contact(request):
             try:
                 send_mail("SaveLife Volunteer",msg,from_email='adityaintern11@gmail.com',recipient_list=[email])
             except Exception as e:
-                print(e)
                 messages.info(request,"Couldn't process your request now. Kindly try again later")
             else:
                 messages.info(request,'Thank you for the request. Our Team will contact you soon')
@@ -72,7 +71,6 @@ def login(request):
         username = request.POST["username"]
         password = request.POST["password"]
         obj = authenticate(username=username,password=password)
-        print(obj)
         if obj is not None:
             auth.login(request,obj)
             storage = messages.get_messages(request)
@@ -143,14 +141,7 @@ def setNewPassword(request):
     return render(request,'setNewPassword.html')
 
 def dashboard(request):
-    if request.user.type=="Doctor":
-        return redirect('/doctor/dashboard')
-    elif request.user.type=="Patient":
-        return redirect('/patient/dashboard')
-    elif request.user.type=="Donor":
-        return redirect('/donor/dashboard')
-    elif request.user.type=="Pharmacy":
-        return redirect('/pharmacy/dashboard')
+    return render(request,request.user.type+'/'+'dashboard.html')
 
 @csrf_exempt
 def cowinSlot(request):
@@ -234,3 +225,56 @@ def notify(request):
     messages.info(request,'Invalid Request')
     return redirect('/dashboard')
 
+
+def addProfile(request):
+    if request.method=="POST":
+        address1 = request.POST["address1"]
+        address2 = request.POST["address2"]
+        street = request.POST["street"]
+        city = request.POST["city"]
+        state = request.POST["state"]
+        pincode = request.POST["pincode"]
+        covid = request.POST["covid"]
+        skype = request.POST["skype"]
+        mobile = request.POST["mobile"]
+        obj = Profile.objects.create(user=request.user,address1=address1,
+                                address2=address2,street=street,city=city,
+                                state=state,pincode=pincode,covid=covid,skype=skype,mobile=mobile)
+        storage = messages.get_messages(request)
+        storage.used = True
+        messages.info(request,'Profile Created Successfully')
+        return redirect('/dashboard')
+    obj = Profile.objects.filter(user=request.user)
+    if len(obj)==0:
+        return render(request,str(request.user.type)+'/'+"addProfile.html")
+    else:
+        return render(request,str(request.user.type)+'/'+"updateProfile.html")
+
+def updateProfile(request):
+    if request.method=="POST":
+        address1 = request.POST["address1"]
+        address2 = request.POST["address2"]
+        street = request.POST["street"]
+        city = request.POST["city"]
+        state = request.POST["state"]
+        pincode = request.POST["pincode"]
+        covid = request.POST["covid"]
+        obj = Profile.objects.get(user=request.user)
+        obj.address1 = address1
+        obj.address2 = address2
+        obj.street = street
+        obj.city = city
+        obj.state = state
+        obj.pincode = pincode
+        obj.covid = covid
+        obj.save()
+        storage = messages.get_messages(request)
+        storage.used = True
+        messages.info(request,'Profile Updated Successfully')
+        return redirect('/dashboard')        
+    storage = messages.get_messages(request)
+    storage.used = True
+    messages.info(request,'Invalid Request')
+    return redirect('/dashboard')
+
+        

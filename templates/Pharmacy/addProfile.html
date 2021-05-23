@@ -1,0 +1,74 @@
+{%extends "Pharmacy/dashboard.html"%}
+{%block content%}
+<br>
+<form action="/addProfile" method="POST">
+    {%csrf_token%}
+    <div class="row">
+        <div class="col-sm">
+            <div class="form-group">
+                <label for="address1">Address I - (DoorNo, Flat)</label>
+                <input type="text" class="form-control" name="address1" id="address1" required>
+            </div>
+        </div>
+        <div class="col-sm">
+            <div class="form-group">
+                <label for="address2">Address II - (Building Name, Nearby)</label>
+                <input type="text" class="form-control" name="address2" id="address2" required>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm">
+            <div class="form-group">
+                <label for="street">Street</label>
+                <input type="text" class="form-control" name="street" id="street" required>
+            </div>
+        </div>
+        <div class="col-sm">
+            <div class="form-group">
+                <label for="city">City</label>
+                <input type="text" class="form-control" name="city" id="city" required>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm">
+            <div class="form-group">
+                <label for="state">State</label>
+                <input type="text" class="form-control" name="state" id="state" required>
+            </div>
+        </div>
+        <div class="col-sm">
+            <div class="form-group">
+                <label for="pincode">Pincode</label>
+                <input type="number" class="form-control" name="pincode" id="pincode" required>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm">
+            <div class="form-group">
+                <label for="covid">Covid +ve</label>
+                <select name="covid" id="covid" class="form-control">
+                    <option value="False">Select</option>
+                    <option value="True">Yes</option>
+                    <option value="False">No</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-sm">
+            <div class="form-group">
+                <label for="skype">Skype ID (for doctor video call consultation)</label>
+                <input type="text" class="form-control" name="skype" id="skype" required>
+            </div>
+        </div>
+        <div class="col-sm">
+            <div class="form-group">
+                <label for="mobile">Phone Number</label>
+                <input type="number" class="form-control" name="mobile" id="mobile" required>
+            </div>
+        </div>
+    </div>
+    <input type="submit" value="Add Profile" class="btn btn-outline-primary">
+</form>
+{%endblock%}
