@@ -6,6 +6,8 @@ from django_cryptography.fields import encrypt
 # Create your models here.
 class User(AbstractUser):
     type = models.CharField(max_length=10,choices=(("Patient","Patient"),("Doctor","Doctor"),("Donor","Donor"),("Pharmacy","Pharmacy")))
+    def __str__(self):
+        return self.username
 
 class Contact(models.Model):
     name = encrypt(models.CharField(max_length=100))
