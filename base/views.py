@@ -2,10 +2,15 @@ from django.shortcuts import render,redirect
 from django.core.mail import send_mail
 import random
 from django.contrib.auth.hashers import make_password
-from .models import SiteAnnouncement
+from .models import NotifySlot, SiteAnnouncement
 from django.contrib import messages,auth
 from django.contrib.auth import authenticate
-from .models import Contact, User
+from .models import Contact, User, NotifySlot
+import requests
+from fake_useragent import UserAgent
+import json
+from datetime import datetime
+from django.views.decorators.csrf import csrf_exempt
 
 # Create your views here.
 def home(request):
@@ -146,3 +151,86 @@ def dashboard(request):
         return redirect('/donor/dashboard')
     elif request.user.type=="Pharmacy":
         return redirect('/pharmacy/dashboard')
+
+@csrf_exempt
+def cowinSlot(request):
+    obj = NotifySlot.objects.filter(user=request.user)
+    already = False
+    if len(obj)>0:
+        already=True
+    temp_user_agent = UserAgent()
+    if already:
+        return render(request,"cowin.html",{'agent':temp_user_agent.random,'obj':obj[0],'already':already})
+    else:
+        return render(request,"cowin.html",{'agent':temp_user_agent.random,'already':already})
+
+def getSlotDay(request):
+    if request.method=="POST":
+        date = request.POST["date"]
+        pincode = request.POST["pincode"]
+        temp_user_agent = UserAgent()
+        headers = {
+            'accept': 'application/json',
+            'Accept-Language': 'hi_IN',
+            'User-Agent': temp_user_agent.random
+        }
+        date = datetime.strptime(date, "%Y-%m-%d").strftime('%d-%m-%Y')
+        params = (
+            ('pincode', pincode),
+            ('date', date),
+        )
+        response = requests.get('https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/findByPin', headers=headers, params=params)
+        json_data = json.loads(response.text)
+        return render(request,"showData.html",{'data':json_data})
+    else:
+        storage = messages.get_messages(request)
+        storage.used = True
+        messages.info(request,'Passwords not matching')
+        return redirect('/dashboard')    
+
+def getSlotWithDistrict(request):
+    if request.method=="POST":
+        state = request.POST["states"]
+        district = request.POST["district"]
+        date = request.POST["date"]
+        temp_user_agent = UserAgent()
+        headers = {
+            'accept': 'application/json',
+            'Accept-Language': 'hi_IN',
+            'User-Agent': temp_user_agent.random
+        }
+        date = datetime.strptime(date, "%Y-%m-%d").strftime('%d-%m-%Y')
+        params = (
+            ('district_id', district),
+            ('date', date),
+        )
+        response = requests.get('https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/findByDistrict', headers=headers, params=params)
+        json_data = json.loads(response.text)
+        return render(request,"showData.html",{'data':json_data})
+    else:
+        storage = messages.get_messages(request)
+        storage.used = True
+        messages.info(request,'Passwords not matching')
+        return redirect('/dashboard')    
+
+def notify(request):
+    val = NotifySlot.objects.filter(user=request.user)
+    if len(val)>0:
+        storage = messages.get_messages(request)
+        storage.used = True
+        messages.info(request,'Already Registered for Notifications')
+        return redirect('/dashboard')
+    if request.method=="POST":
+        pincode = request.POST["setpincode"]
+        district = request.POST["setdistrict"]
+        state = request.POST["setstate"]
+        obj = NotifySlot.objects.create(user=request.user,pincode=pincode,district_id=district,state_id=state)
+        storage = messages.get_messages(request)
+        storage.used = True
+        messages.info(request,'Subscribed successfully for notifications')
+        return redirect('/dashboard')
+    storage = messages.get_messages(request)
+    storage.used = True
+    messages.info(request,'Invalid Request')
+    return redirect('/dashboard')
+

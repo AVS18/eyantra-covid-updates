@@ -9,5 +9,9 @@ urlpatterns = [
     path('setNewPassword',views.setNewPassword,name="setNewPassword"),
     path('changePassword',views.changePassword,name="changePassword"),
     path('logout',views.logout,name="logout"),
-    path('dashboard',views.dashboard,name="dashboard")
+    path('dashboard',views.dashboard,name="dashboard"),
+    path('cowinSlot',views.cowinSlot,name="cowinSlot"),
+    path('getSlotDay',views.getSlotDay,name="getSlotDay"),
+    path('getSlotWithDistrict',views.getSlotWithDistrict,name="getSlotWithDistrict"),
+    path('notify',views.notify,name="notify")
 ]

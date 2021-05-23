@@ -17,3 +17,9 @@ class SiteAnnouncement(models.Model):
     message=models.CharField(max_length=2048)
     link_exist = models.BooleanField()
     link = models.CharField(max_length=2048,blank=True,null=True)
+
+class NotifySlot(models.Model):
+    user = models.ForeignKey(User,on_delete=models.CASCADE)
+    pincode = models.IntegerField()
+    state_id = models.IntegerField()
+    district_id = models.IntegerField()

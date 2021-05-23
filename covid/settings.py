@@ -25,7 +25,7 @@ SECRET_KEY = 'buv(1qp25_7ar_-!f3cy&tm&cs2tha@sx6wfo=54ck1uv#h*b*'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1']
 
 
 # Application definition
@@ -42,6 +42,10 @@ INSTALLED_APPS = [
     'donor',
     'patient',
     'pharmacy'
+]
+
+CORS_ORIGIN_WHITELIST = [
+    'https://cdn-api.co-vin.in'
 ]
 
 MIDDLEWARE = [
