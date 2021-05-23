@@ -1,0 +1,126 @@
+.mainImg {
+    width: 100%;
+}
+@media screen and (max-width: 700px) {
+    .mainImg{
+        height: 200px;
+    }
+}
+.aboutText {
+    font-family: Georgia, 'Times New Roman', Times, serif;	
+    font-weight: 200;
+    line-height: 2em;
+    font-size: larger;
+    letter-spacing: 1.3px;
+    text-align: justify;
+    color: #000080;
+}
+.main {
+    font-weight: 400;
+    font-size: large;
+}
+.navbar-nav a{
+    font-size: larger;
+    font-stretch: expanded;
+    text-align: center;
+}
+
+.homeText {
+    font-size: x-large;
+    font-family: 'Trebuchet MS', sans-serif;
+    font-style: oblique;
+}
+.parallax{
+    background-image: url('../images/share_6.jpg');
+    min-height: 500px;
+    background-attachment: fixed;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+.parallax2{
+    background-image: url('../images/share2.jpg');
+    min-height: 500px;
+    background-attachment: fixed;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+.parallax4{
+    background-image: url('../images/share3.jpg');
+    min-height: 500px;
+    background-attachment: fixed;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+.footer{
+    text-align: center;
+}
+.introHead{
+    text-align: center;
+    font-size: xx-large;
+    font-style: oblique;
+    padding-left: 5px;
+    font-family: 'Gill Sans', sans-serif;
+    color: #000080;
+}
+.tagline{
+    text-align: center;
+    font-size: large;
+    font-style: oblique;
+    padding-left: 40px;
+    font-family: 'Gill Sans', sans-serif;
+    color: #000080;
+}
+.mytext{
+    text-align: center;
+    font-size: x-large;
+    font-style: oblique;
+    padding: 5px;
+    font-family: 'Gill Sans', sans-serif;
+    color: #000080;
+}
+
+@media screen and (max-width: 700px){
+
+    .logo{
+        align-content: center;
+    }    
+}
+.lsb{
+    text-align: center;
+    padding-top: 5%;
+}
+.aboutImage {
+    max-width: 100%;
+    height: auto;
+}
+.footer {
+    font-weight: 400;
+    font-size: 1.3em;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    color: #002366;
+    text-align: center;
+}
+
+::-webkit-scrollbar {
+    width: 10px;
+}
+  
+::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 5px grey; 
+    border-radius: 10px;
+  }
+   
+  ::-webkit-scrollbar-thumb {
+    background: #0066A1; 
+    border-radius: 10px;
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    background: black; 
+  }
+  
