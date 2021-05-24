@@ -1,0 +1,82 @@
+{%extends "Patient/dashboard.html"%}
+{%load static%}
+{%block content%}
+<link rel="stylesheet" href="{%static 'css/home.css'%}">
+<p class="aboutText">First Add Medical History then upload reports individually</p>
+<form action="/patient/MedicalReport" method="post">
+    {%csrf_token%}
+    <div class="row">
+        <div class="col-sm">
+            <div class="form-group">
+                <label for="spo2">Spo2</label>
+                <input type="text" class="form-control" name="spo2" id="spo2" value="{{report.spo2}}" required>
+            </div>
+        </div>
+        <div class="col-sm">
+            <div class="form-group">
+                <label for="bp">Blood Pressure</label>
+                <input type="text" class="form-control" name="bp" id="bp" value="{{report.bp}}" required>
+            </div>
+        </div>
+    </div>    
+    <div class="row">
+        <div class="col-sm">
+            <div class="form-group">
+                <label for="sugar">sugar</label>
+                <select name="sugar" id="sugar" class="form-control">
+                    <option value="False">Select</option>    
+                    <option value="True">Yes</option>    
+                    <option value="False">No</option>    
+                </select>
+                <small>Currently Stored : {{report.sugar}}</small>
+            </div>
+        </div>
+        <div class="col-sm">
+            <div class="form-group">
+                <label for="covid">Covid</label>
+                <select name="covid" id="covid" class="form-control">
+                    <option value="False">Select</option>    
+                    <option value="True">Yes</option>    
+                    <option value="False">No</option>    
+                </select>
+                <small>Currently Stored : {{report.covid}}</small>
+            </div>
+        </div>
+    </div>    
+    <input type="submit" value="Add/Update Report" class="btn btn-outline-success">
+</form>
+<p class="aboutText">Attached Medical Reports</p>
+<table class="table">
+    <tr>
+        <th>Description</th>
+        <th>File Attached</th>
+    </tr>
+    {% for item in report.report.all %}
+    <tr>
+        <td>{{item.description}}</td>
+        <td><a href="{{item.file.url}}">View Report</a></td>
+    </tr>
+    {%endfor%}
+</table>
+<p class="aboutText">Upload New Reports</p>
+<form action="/patient/attachReport" method="POST" enctype="multipart/form-data">
+    {%csrf_token%}
+    <div class="row">
+        <div class="col-sm">
+            <div class="form-group">
+                <label for="desc">Description</label>
+                <input type="text" class="form-control" name="description" id="desc" required>
+            </div>
+        </div>
+        <div class="col-sm">
+            <div class="form-group">
+                <label for="doc">Attach Medical Documents</label>
+                <input type="file" class="form-control" name="file" id="doc" required>
+            </div>
+        </div>
+    </div>
+    <br>
+    <input type="submit" class="btn btn-outline-primary" value="Attach Support Documents">
+</form>
+
+{%endblock%}

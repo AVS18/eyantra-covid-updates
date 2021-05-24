@@ -37,3 +37,8 @@ class Profile(models.Model):
     covid = models.BooleanField()
     skype = models.CharField(blank=True,max_length=200)
     mobile = models.BigIntegerField(null=True)
+
+class ContactAdmin(models.Model):
+    user = models.ForeignKey(User,on_delete=models.SET_NULL,null=True)
+    heading = models.CharField(max_length=100)
+    message = models.CharField(max_length=2048)

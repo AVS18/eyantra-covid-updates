@@ -1,8 +1,9 @@
+from doctor.models import CovidTips
 from django.shortcuts import render,redirect
 from django.core.mail import send_mail
 import random
 from django.contrib.auth.hashers import make_password
-from .models import NotifySlot, SiteAnnouncement,Profile
+from .models import ContactAdmin, NotifySlot, SiteAnnouncement,Profile
 from django.contrib import messages,auth
 from django.contrib.auth import authenticate
 from .models import Contact, User, NotifySlot
@@ -277,4 +278,18 @@ def updateProfile(request):
     messages.info(request,'Invalid Request')
     return redirect('/dashboard')
 
-        
+def covidTips(request):
+    obj = CovidTips.objects.all()
+    return render(request,'covidTips.html',{'obj':obj})
+
+def contactAdmin(request):
+    if request.method=="POST":
+        heading = request.POST["heading"]
+        message = request.POST["message"]
+        ContactAdmin.objects.create(heading=heading,message=message,user=request.user)
+        storage = messages.get_messages(request)
+        storage.used = True
+        messages.info(request,'Admin will reach out to you soon. Thanks for informing us :)')
+        return redirect('/dashboard')
+    obj = ContactAdmin.objects.filter(user=request.user)
+    return render(request,'contactAdmin.html',{'obj':obj})

@@ -1,0 +1,22 @@
+{%extends "Patient/dashboard.html"%}
+{%load static%}
+{%block content%}
+<link rel="stylesheet" href="{% static 'css/home.css'%}">
+<p class="headText"></p>
+<table class="table bg-light">
+    <tr>
+        <th>Amount</th>
+        <th>Description</th>
+        <th>Status</th>
+        <th>Bill Generated Time</th>
+    </tr>
+    {%for item in bill%}
+    <tr>    
+        <td>{{item.amount}}</td>
+        <td>{{item.description}}</td>
+        <td>{{item.status}}</td>
+        <td>{{item.added_at}}</td>
+    </tr>
+    {%endfor%}
+</table>
+{%endblock%}

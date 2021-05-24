@@ -1,7 +1,10 @@
 from django.shortcuts import render,redirect
 from pharmacy.models import Medicine,Order
 from django.contrib import messages
-from .models import Bill
+from .models import Bill,MedicalReport,Report
+from doctor.models import Appointment, DoctorProfile,Consultation
+from base.models import User
+
 # Create your views here.
 def searchMedicine(request):
     if request.user.type!="Patient":
@@ -98,3 +101,132 @@ def cancelOrder(request,oid):
     storage.used = True
     messages.info(request,'Order Cancelled Successfully')
     return redirect('/dashboard')
+
+def yourMedicalReport(request):
+    if request.user.type!="Patient":
+        storage = messages.get_messages(request)
+        storage.used = True
+        messages.info(request,'Not Allowed. Please Re-Login')
+        return redirect('/')
+    if request.method=="POST":
+        obj =  MedicalReport.objects.filter(patient=request.user).select_related()
+        spo2 = request.POST["spo2"]
+        bp = request.POST["bp"]
+        sugar = request.POST["sugar"]
+        covid = request.POST["covid"]
+        if len(obj)==0:
+            MedicalReport.objects.create(patient=request.user,spo2=spo2,bp=bp,sugar=sugar,covid=covid)
+            storage = messages.get_messages(request)
+            storage.used = True
+            messages.info(request,'Report Created Successfully')
+            return redirect('/dashboard')
+        else:
+            obj[0].spo2 = spo2
+            obj[0].bp = bp
+            obj[0].sugar = sugar
+            obj[0].covid = covid
+            obj[0].save()
+            storage = messages.get_messages(request)
+            storage.used = True
+            messages.info(request,'Report Updated Successfully')
+            return redirect('/dashboard')
+    current_report = MedicalReport.objects.filter(patient=request.user).select_related()
+    if len(current_report)==0:
+        return render(request,"Patient/yourMedicalReport.html")
+    else:
+        return render(request,"Patient/yourMedicalReport.html",{'report':current_report[0]})
+
+def attachReport(request):
+    if request.user.type!="Patient":
+        storage = messages.get_messages(request)
+        storage.used = True
+        messages.info(request,'Not Allowed. Please Re-Login')
+        return redirect('/')
+    if request.method=="POST":
+        myfiles = request.FILES
+        file = myfiles["file"]
+        description = request.POST["description"]
+        obj = Report.objects.create(user=request.user,file=file,description=description)
+        reports = MedicalReport.objects.filter(patient=request.user)
+        reports[0].report.add(obj)
+        storage = messages.get_messages(request)
+        storage.used = True
+        messages.info(request,'Document Saved Successfully')
+        return redirect('/patient/MedicalReport')
+    storage = messages.get_messages(request)
+    storage.used = True
+    messages.info(request,'Invalid Request')
+    return redirect('/dashboard')
+        
+def viewDoctor(request):
+    if request.user.type!="Patient":
+        storage = messages.get_messages(request)
+        storage.used = True
+        messages.info(request,'Not Allowed. Please Re-Login')
+        return redirect('/')
+    
+    doctors = DoctorProfile.objects.all()
+    return render(request,'Patient/viewDoctors.html',{'doctor':doctors})
+
+def bookAppointment(request,did):
+    if request.user.type!="Patient":
+        storage = messages.get_messages(request)
+        storage.used = True
+        messages.info(request,'Not Allowed. Please Re-Login')
+        return redirect('/')
+    
+    doctor = User.objects.get(id=did)
+    patient = request.user
+    report = MedicalReport.objects.filter(patient=request.user)
+    if len(report)==0:
+        storage = messages.get_messages(request)
+        storage.used = True
+        messages.info(request,'First Fill your medical reports and then book appointment')
+        return redirect('/dashboard')
+    obj = Appointment.objects.filter(doctor=doctor,patient=patient)
+    if len(obj)==0:
+        Appointment.objects.create(doctor=doctor,patient=patient,status="Pending")
+        storage = messages.get_messages(request)
+        storage.used = True
+        messages.info(request,'Appointment Created Successfully')
+        return redirect('/dashboard')
+    else:
+        obj[0].status = "Pending"
+        obj[0].save()
+        storage = messages.get_messages(request)
+        storage.used = True
+        messages.info(request,'Appointment Updated Successfully')
+        return redirect('/dashboard')
+
+def viewAppointment(request):
+    if request.user.type!="Patient":
+        storage = messages.get_messages(request)
+        storage.used = True
+        messages.info(request,'Not Allowed. Please Re-Login')
+        return redirect('/')
+    
+    pending = Appointment.objects.filter(patient=request.user,status="Pending")
+    open = Appointment.objects.filter(patient=request.user,status="Open")
+    close = Appointment.objects.filter(patient=request.user,status="Close")
+    pl,ol,cl = len(pending),len(open),len(close)
+    return render(request,"Patient/displayAppointment.html",{'pending':pending,'open':open,'close':close, 'pl':pl,'ol':ol,'cl':cl})
+
+def viewConsultation(request,cid):
+    if request.user.type!="Patient":
+        storage = messages.get_messages(request)
+        storage.used = True
+        messages.info(request,'Not Allowed. Please Re-Login')
+        return redirect('/') 
+    consultation = Consultation.objects.get(id=cid)
+    medical_history = MedicalReport.objects.filter(patient=consultation.appointment.patient)
+    return render(request,"Patient/viewConsultation.html",{'consultation':consultation,'medhist':medical_history[0]})
+
+def yourBill(request):
+    if request.user.type!="Patient":
+        storage = messages.get_messages(request)
+        storage.used = True
+        messages.info(request,'Not Allowed. Please Re-Login')
+        return redirect('/') 
+    
+    bill = Bill.objects.filter(user=request.user)
+    return render(request,"Patient/bill.html",{'bill':bill})

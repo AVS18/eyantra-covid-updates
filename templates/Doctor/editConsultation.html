@@ -1,0 +1,152 @@
+{%extends "Doctor/dashboard.html"%}
+{%load static%}
+{%block content%}
+<style>
+    .right{
+        float: right;
+    }
+    .left{
+        float: left;
+    }
+    .clear{
+        clear: both;
+    }
+    .centText {
+    font-family: Georgia, 'Times New Roman', Times, serif;	
+    font-weight: 200;
+    line-height: 2em;
+    font-size: x-large;
+    letter-spacing: 1.3px;
+    text-align: center;
+    color: #000080;
+    }
+    .leftText {
+    font-family: Georgia, 'Times New Roman', Times, serif;	
+    font-weight: 200;
+    line-height: 2em;
+    font-size: larger;
+    letter-spacing: 1.3px;
+    text-align: left;
+    color: #000080;
+    }
+</style>
+<center><img src="{%static 'images/logo.jpg'%}" height="100px" width="150px" alt=""></center>
+<p class="centText"><u>Consultation Report</u></p>
+<div class="left">
+    <p>Patient Name:&emsp;{{consultation.appointment.patient.first_name}}</p>
+    <p>Skype ID:&emsp;{{consultation.appointment.patient.profile.skype}}</p>
+    <p>Patient City:&emsp;{{consultation.appointment.patient.profile.city}}</p>
+</div>
+<div class="right">
+    <p>Doctor Name:&emsp;{{consultation.appointment.doctor.first_name}}</p>
+    <p>Doctor ID:&emsp;{{consultation.appointment.doctor.profile.skype}}</p>
+    <p>Patient City:&emsp;{{consultation.appointment.doctor.profile.city}}</p>
+</div>
+<div class="clear"></div>
+<hr width="100%">
+<p class="leftText">Medical History</p>
+<div class="row">
+    <div class="col-sm-4">
+    <p>SpO2:&emsp;{{medhist.spo2}}</p>
+    <p>bp:&emsp;{{medhist.bp}}</p>
+    <p>Sugar:&emsp;{{medhist.sugar}}</p>
+    <p>Covid RTPCR:&emsp;{{medhist.covid}}</p>
+    </div>
+    <div class="col-sm-6">
+        <table class="table">
+            <tr>
+                <th>Description</th>
+                <th>File Attached</th>
+            </tr>
+            {% for item in medhist.report.all %}
+            <tr>
+                <td>{{item.description}}</td>
+                <td><a href="{{item.file.url}}">View Report</a></td>
+            </tr>
+            {%endfor%}
+        </table>        
+    </div>
+</div>
+<hr width="100%">
+<div class="row">
+    <div class="col-sm-6">
+        <p class="leftText">Old Consultations</p>
+        {% if ocl == 0%}
+        <p>No Old Consultation</p>
+        {%else%}
+        <table class="table">
+            <tr>
+                <th>Doctor Name</th>
+                <th>Consulation Date</th>
+                <td>View Report</td>
+            </tr>
+            {%for item in oldcon%}
+            <tr>
+                <td>{{item.appointment.doctor.first_name}}</td>
+                <td>{{item.created_at}}</td>
+                <td><a href="/doctor/viewConsultation/{{item.id}}" class="btn btn-link">Report</a></td>
+            </tr>
+            {%endfor%}
+        </table>
+        {%endif%}
+    </div>    
+    <div class="col-sm-6">
+        <p class="leftText">Prescribed Medicines <a data-target="#medicine" data-toggle="modal" class="btn btn-outline-info">Add Medicines</a></p>
+        <table class="table">
+            <tr>
+                <th>Name</th>
+                <th>Dosage</th>
+            </tr>
+            {%for item in consultation.medicines.all%}
+            <tr>
+                <td>{{item.name}}</td>
+                <td>{{item.dosage}}</td>
+            </tr>
+            {%endfor%}
+        </table>
+    </div>
+    <hr width="100%">
+</div>
+<div class="right">
+    <p>{{consultation.appointment.doctor.first_name}} <br><p class="leftText">Signature</p></a></p>
+</div>
+<div class="modal fade bd-example-modal-lg" id="medicine" tabindex="-1" role="dialog" aria-labelledby="login" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Add Medicines</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <center><img class="logo" src="{% static 'images/logo.jpg' %}" width="150px" height="100px" alt="Logo"></center>
+        </div>
+      <form action="/doctor/addMedicine" method="POST">
+        <div class="modal-body">
+            <input type="text" name="cid" value="{{consultation.id}}" style="display: none;">
+            {%csrf_token%}
+            <div class="row">
+              <div class="col-sm">
+                <div class="form-group">
+                  <label for="name">Name</label>
+                  <input type="text" name="name" id="name" required class="form-control">
+                </div>
+              </div>
+              <div class="col-sm">
+                <div class="form-group">
+                  <label for="dosage">Dosage</label>
+                  <input type="dosage" name="dosage" id="dosage" required class="form-control">
+                </div>
+              </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary">Add Medicine</button>
+        </div>
+      </form>
+      </div>
+    </div>
+</div>
+{%endblock%}

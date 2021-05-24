@@ -1,0 +1,39 @@
+{%extends "Doctor/dashboard.html"%}
+{%load static%}
+{%block content%}
+<link rel="stylesheet" href="{% static 'css/home.css'%}">
+<form action="/doctor/addTips" method="post">
+    {%csrf_token%}
+    <div class="row">
+        <div class="col-sm">
+            <div class="form-group">
+                <label for="title">Title</label>
+                <input type="text" class="form-control" id="title" name="title" required>
+            </div>
+        </div>
+        <div class="col-sm">
+            <div class="form-group">
+                <label for="description">Description</label>
+                <textarea name="description" id="description" cols="10" rows="4" class="form-control"></textarea>
+            </div>
+        </div>
+    </div>
+    <input type="submit" value="Add Tip" class="btn btn-outline-info">
+</form>
+<p class="aboutText">Tips Contributed</p>
+            <div class="row">
+                {%for item in obj%}
+                <div class="col-sm-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5>{{item.title}}</h5>
+                        </div>
+                        <div class="card-body">
+                          <h6 class="card-text">{{item.description}}</h6>
+                          <p class="aboutText">~{{item.user.first_name}}</p>
+                        </div>
+                    </div>                  
+                </div>
+                {%endfor%}
+</div>
+{%endblock%}

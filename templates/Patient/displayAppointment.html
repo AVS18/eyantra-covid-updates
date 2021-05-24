@@ -1,0 +1,60 @@
+{%extends "Patient/dashboard.html"%}
+{%load static%}
+{%block content%}
+<link rel="stylesheet" href="{%static 'css/home.css'%}">
+<p class="aboutText">Pending Appointments</p>
+{% if pl == 0%}
+<p>No Pending Appointments</p>
+{%else%}
+<table class="table">
+    <tr>
+        <th>Doctor Name</th>
+        <th>Created On</th>
+    </tr>
+    {%for item in pending%}
+    <tr>
+        <td>{{item.doctor.first_name}}</td>
+        <td>{{item.date_created}}</td>
+    </tr>
+    {%endfor%}
+</table>
+{%endif%}
+<p class="aboutText">Open Appointments</p>
+{% if ol == 0%}
+<p>No Appointments are ongoing</p>
+{%else%}
+<table class="table">
+    <tr>
+        <th>Doctor Name</th>
+        <th>Created On</th>
+        <th>View Prescription</th>
+    </tr>
+    {%for item in open%}
+    <tr>
+        <td>{{item.doctor.first_name}}</td>
+        <td>{{item.date_created}}</td>
+        <td><a href="/patient/viewConsultation/{{item.consultation.id}}" class="btn btn-link">View Doctor Prescription</a></td>
+    </tr>
+    {%endfor%}
+</table>
+{%endif%}
+<p class="aboutText">Completed Appointments</p>
+{% if cl == 0%}
+<p>No Appointment Completed</p>
+{%else%}
+<table class="table">
+    <tr>
+        <th>Doctor Name</th>
+        <th>Created On</th>
+        <th>View Prescription</th>
+    </tr>
+    {%for item in close%}
+    <tr>
+        <td>{{item.doctor.first_name}}</td>
+        <td>{{item.date_created}}</td>
+        <td><a href="/patient/viewConsultation/{{item.consultation.id}}" class="btn btn-link">View Doctor Prescription</a></td>
+    </tr>
+    {%endfor%}
+</table>
+{%endif%}
+{%endblock%}

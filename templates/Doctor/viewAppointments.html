@@ -1,0 +1,66 @@
+{%extends "Doctor/dashboard.html"%}
+{%load static%}
+{%block content%}
+<link rel="stylesheet" href="{%static 'css/home.css'%}">
+<p class="aboutText">Pending Appointments</p>
+{% if pl == 0%}
+<p>No Pending Appointments</p>
+{%else%}
+<table class="table">
+    <tr>
+        <th>Patient Name</th>
+        <th>Created On</th>
+        <th colspan="2">Status</th>
+    </tr>
+    {%for item in pending%}
+    <tr>
+        <td>{{item.patient.first_name}}</td>
+        <td>{{item.date_created}}</td>
+        <td><a href="/doctor/openAppointment/{{item.id}}" class="btn btn-outline-primary">Open Appointment</a></td>
+        <td><a href="/doctor/rejectAppointment/{{item.id}}" class="btn btn-outline-primary">Reject Appointment</a></td>
+    </tr>
+    {%endfor%}
+</table>
+{%endif%}
+<p class="aboutText">Open Appointments</p>
+{% if ol == 0%}
+<p>No Appointments are ongoing</p>
+{%else%}
+<table class="table">
+    <tr>
+        <th>Patient Name</th>
+        <th>Created On</th>
+        <th colspan="2" style="text-align: center;">Consultation Report</th>
+        <th>Status</th>
+    </tr>
+    {%for item in open%}
+    <tr>
+        <td>{{item.patient.first_name}}</td>
+        <td>{{item.date_created}}</td>
+        <td><a href="/doctor/viewConsultation/{{item.consultation.id}}" class="btn btn-outline-primary">View Report</a></td>
+        <td><a href="/doctor/editConsultation/{{item.consultation.id}}" class="btn btn-outline-info">Edit Report</a></td>
+        <td><a href="/doctor/closeAppointment/{{item.id}}" class="btn btn-outline-danger">Close Appointment</a></td>
+    </tr>
+    {%endfor%}
+</table>
+{%endif%}
+<p class="aboutText">Completed Appointments</p>
+{% if cl == 0%}
+<p>No Appointment Completed</p>
+{%else%}
+<table class="table">
+    <tr>
+        <th>Doctor Name</th>
+        <th>Created On</th>
+        <th>Prescription</th>
+    </tr>
+    {%for item in close%}
+    <tr>
+        <td>{{item.patient.first_name}}</td>
+        <td>{{item.date_created}}</td>
+        <td><a href="/doctor/viewConsultation/{{item.consultation.id}}" target="_blank" class="btn btn-link">View Doctor Prescription</a></td>
+    </tr>
+    {%endfor%}
+</table>
+{%endif%}
+{%endblock%}

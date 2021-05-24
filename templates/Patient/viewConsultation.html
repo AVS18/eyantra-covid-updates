@@ -1,0 +1,92 @@
+{%extends "Patient/dashboard.html"%}
+{%load static%}
+{%block content%}
+<style>
+    .right{
+        float: right;
+    }
+    .left{
+        float: left;
+    }
+    .clear{
+        clear: both;
+    }
+    .centText {
+    font-family: Georgia, 'Times New Roman', Times, serif;	
+    font-weight: 200;
+    line-height: 2em;
+    font-size: x-large;
+    letter-spacing: 1.3px;
+    text-align: center;
+    color: #000080;
+    }
+    .leftText {
+    font-family: Georgia, 'Times New Roman', Times, serif;	
+    font-weight: 200;
+    line-height: 2em;
+    font-size: larger;
+    letter-spacing: 1.3px;
+    text-align: left;
+    color: #000080;
+    }
+</style>
+<center><img src="{%static 'images/logo.jpg'%}" height="100px" width="150px" alt=""></center>
+<p class="centText"><u>Consultation Report</u></p>
+<div class="left">
+    <p>Patient Name:&emsp;{{consultation.appointment.patient.first_name}}</p>
+    <p>Skype ID:&emsp;{{consultation.appointment.patient.profile.skype}}</p>
+    <p>Patient City:&emsp;{{consultation.appointment.patient.profile.city}}</p>
+</div>
+<div class="right">
+    <p>Doctor Name:&emsp;{{consultation.appointment.doctor.first_name}}</p>
+    <p>Doctor ID:&emsp;{{consultation.appointment.doctor.profile.skype}}</p>
+    <p>Patient City:&emsp;{{consultation.appointment.doctor.profile.city}}</p>
+</div>
+<div class="clear"></div>
+<hr width="100%">
+<p class="leftText">Medical History</p>
+<div class="row">
+    <div class="col-sm-4">
+    <p>SpO2:&emsp;{{medhist.spo2}}</p>
+    <p>bp:&emsp;{{medhist.bp}}</p>
+    <p>Sugar:&emsp;{{medhist.sugar}}</p>
+    <p>Covid RTPCR:&emsp;{{medhist.covid}}</p>
+    </div>
+    <div class="col-sm-6">
+        <table class="table">
+            <tr>
+                <th>Description</th>
+                <th>File Attached</th>
+            </tr>
+            {% for item in medhist.report.all %}
+            <tr>
+                <td>{{item.description}}</td>
+                <td><a href="{{item.file.url}}">View Report</a></td>
+            </tr>
+            {%endfor%}
+        </table>        
+    </div>
+</div>
+<hr width="100%">
+<div class="row">
+    <div class="col-sm">
+        <p class="leftText">Prescribed Medicines</p>
+        <table class="table">
+            <tr>
+                <th>Name</th>
+                <th>Dosage</th>
+            </tr>
+            {%for item in consultation.medicines.all%}
+            <tr>
+                <td>{{item.name}}</td>
+                <td>{{item.dosage}}</td>
+            </tr>
+            {%endfor%}
+        </table>
+    </div>
+</div>
+<hr width="100%">
+<div class="right">
+    <p>{{consultation.appointment.doctor.first_name}} <br><p class="leftText">Signature</p></a></p>
+</div>
+{%endblock%}

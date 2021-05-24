@@ -15,5 +15,7 @@ urlpatterns = [
     path('getSlotWithDistrict',views.getSlotWithDistrict,name="getSlotWithDistrict"),
     path('notify',views.notify,name="notify"),
     path('addProfile',views.addProfile,name="addProfile"),
-    path('updateProfile',views.updateProfile,name="updateProfile")
+    path('updateProfile',views.updateProfile,name="updateProfile"),
+    path('covidTips',views.covidTips,name="covidTips"),
+    path('contactAdmin',views.contactAdmin,name="contactAdmin")
 ]

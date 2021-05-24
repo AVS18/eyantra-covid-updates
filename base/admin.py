@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import User, SiteAnnouncement, Contact, NotifySlot
+from .models import ContactAdmin, User, SiteAnnouncement, Contact, NotifySlot
 # Register your models here.
 class UserRef(admin.ModelAdmin):
     list_display = ['username','first_name','email']
@@ -21,3 +21,5 @@ admin.site.register(Contact,ContactRef)
 class NotifySlotRef(admin.ModelAdmin):
     list_display = ['user','pincode','state_id','district_id']
     list_filter = ['pincode','state_id','district_id']
+
+admin.site.register(ContactAdmin)
