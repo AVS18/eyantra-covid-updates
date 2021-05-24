@@ -1,0 +1,66 @@
+{%extends "Donor/dashboard.html"%}
+{%load static%}
+{%block content%}
+<link rel="stylesheet" href="{%static 'css/home.css'%}">
+<p class="aboutText">Pending Requests</p>
+{% if pl == 0%}
+<p>No Pending Request</p>
+{%else%}
+<table class="table">
+    <tr>
+        <th>Patient Name</th>
+        <th>Requested Date</th>
+        <th colspan="2">Status</th>
+    </tr>
+    {%for item in pending%}
+    <tr>
+        <td>{{item.patient.first_name}}</td>
+        <td>{{item.rdt}}</td>
+        <td><a href="/donor/acceptRequest/{{item.id}}" class="btn btn-outline-primary">Accept Request</a></td>
+        <td><a href="/donor/rejectRequest/{{item.id}}" class="btn btn-outline-danger">Reject Request</a></td>
+    </tr>
+    {%endfor%}
+</table>
+{%endif%}
+<p class="aboutText">Accepted Request</p>
+{% if al == 0%}
+<p>No Accepted Requests</p>
+{%else%}
+<table class="table">
+    <tr>
+        <th>Patient Name</th>
+        <th>Requested Date</th>
+        <th>Status</th>
+        <th>Contact Number</th>
+    </tr>
+    {%for item in accepted%}
+    <tr>
+        <td>{{item.patient.first_name}}</td>
+        <td>{{item.rdt}}</td>
+        <td>{{item.status}}</td>
+        <td>{{item.patient.profile.mobile}}</td>
+    </tr>
+    {%endfor%}
+</table>
+{%endif%}
+<p class="aboutText">Rejected Request</p>
+{% if rl == 0%}
+<p>No Rejected Requests</p>
+{%else%}
+<table class="table">
+    <tr>
+        <th>Patient Name</th>
+        <th>Requested Date</th>
+        <th>Status</th>
+    </tr>
+    {%for item in rejected%}
+    <tr>
+        <td>{{item.patient.first_name}}</td>
+        <td>{{item.rdt}}</td>
+        <td>{{item.status}}</td>
+    </tr>
+    {%endfor%}
+</table>
+{%endif%}
+
+{%endblock%}

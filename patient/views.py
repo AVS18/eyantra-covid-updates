@@ -4,6 +4,7 @@ from django.contrib import messages
 from .models import Bill,MedicalReport,Report
 from doctor.models import Appointment, DoctorProfile,Consultation
 from base.models import User
+from donor.models import PlasmaProfile,DonorRequest
 
 # Create your views here.
 def searchMedicine(request):
@@ -230,3 +231,83 @@ def yourBill(request):
     
     bill = Bill.objects.filter(user=request.user)
     return render(request,"Patient/bill.html",{'bill':bill})
+
+def searchDonors(request):
+    if request.user.type!="Patient":
+        storage = messages.get_messages(request)
+        storage.used = True
+        messages.info(request,'Not Allowed. Please Re-Login')
+        return redirect('/') 
+    obj = PlasmaProfile.objects.all()
+    return render(request,"Patient/searchDonors.html",{'obj':obj,'len':len(obj)})
+
+def filterDonors(request):
+    if request.user.type!="Patient":
+        storage = messages.get_messages(request)
+        storage.used = True
+        messages.info(request,'Not Allowed. Please Re-Login')
+        return redirect('/') 
+    days_covid_negative = request.GET.get('days_covid_negative')
+    plasma_last_donated = request.GET.get('plasma_last_donated')
+    blood_group = request.GET.get('blood_group')
+    obj = None
+    if days_covid_negative != '':
+        if plasma_last_donated != '':
+            if blood_group != '':
+                obj = PlasmaProfile.objects.filter(plasma_last_donated__gte=plasma_last_donated,days_covid_negative__gte=days_covid_negative,blood_group=blood_group)
+            else:
+                obj = PlasmaProfile.objects.filter(plasma_last_donated__gte=plasma_last_donated,days_covid_negative__gte=days_covid_negative)
+        else:
+            if blood_group != '':
+                obj = PlasmaProfile.objects.filter(days_covid_negative__gte=days_covid_negative,blood_group=blood_group)
+            else:
+                obj = PlasmaProfile.objects.filter(days_covid_negative__gte=days_covid_negative)
+    else:
+        if plasma_last_donated != '':
+            if blood_group != '':
+                obj = PlasmaProfile.objects.filter(plasma_last_donated__gte=plasma_last_donated,blood_group=blood_group)
+            else:
+                obj = PlasmaProfile.objects.filter(plasma_last_donated__gte=plasma_last_donated)
+        else:
+            if blood_group != '':
+                obj = PlasmaProfile.objects.filter(blood_group=blood_group)
+    return render(request,"Patient/searchDonors.html",{'obj':obj,'len':len(obj)})
+
+def requestDonor(request,did):
+    if request.user.type!="Patient":
+        storage = messages.get_messages(request)
+        storage.used = True
+        messages.info(request,'Not Allowed. Please Re-Login')
+        return redirect('/') 
+    
+    donor = User.objects.get(id=did)
+    if donor.type!="Donor":
+        storage = messages.get_messages(request)
+        storage.used = True
+        messages.info(request,'Invalid Donor. Try again')
+        return redirect('/patient/searchDonors') 
+    patient = request.user
+    obj = DonorRequest.objects.filter(donor=donor,patient=patient)  
+    if len(obj)!=0:
+        storage = messages.get_messages(request)
+        storage.used = True
+        messages.info(request,'Request Already Placed')
+        return redirect('/patient/searchDonors') 
+    DonorRequest.objects.create(donor=donor,patient=patient,status="Pending")
+    storage = messages.get_messages(request)
+    storage.used = True
+    messages.info(request,'Request Initiated Successfully')
+    return redirect('/dashboard')
+
+def showDonorRequest(request):
+    if request.user.type!="Patient":
+        storage = messages.get_messages(request)
+        storage.used = True
+        messages.info(request,'Not Allowed. Please Re-Login')
+        return redirect('/') 
+    pending = DonorRequest.objects.filter(patient=request.user,status="Pending")
+    accepted = DonorRequest.objects.filter(patient=request.user,status="Accepted")
+    rejected = DonorRequest.objects.filter(patient=request.user,status="Rejected")
+    pl,al,rl = len(pending),len(accepted),len(rejected)
+    print(pending)
+    return render(request,"Patient/showDonorRequest.html",{'pending':pending,'accepted':accepted,'rejected':rejected,'pl':pl,'al':al,'rl':rl})

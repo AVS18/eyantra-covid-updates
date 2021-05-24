@@ -2,7 +2,7 @@ from django.shortcuts import render,redirect
 from pharmacy.models import Medicine,Order
 from django.contrib import messages
 from patient.models import Bill
-from .models import PlasmaProfile
+from .models import PlasmaProfile,DonorRequest
 def searchMedicine(request):
     if request.user.type!="Donor":
         storage = messages.get_messages(request)
@@ -133,3 +133,44 @@ def addDonorProfile(request):
         return render(request,"Donor/addDonorProfile.html")
     else:
         return render(request,"Donor/addDonorProfile.html",{'profile':profile[0]})
+
+def viewRequest(request):
+    if request.user.type!="Donor":
+        storage = messages.get_messages(request)
+        storage.used = True
+        messages.info(request,'Not Allowed. Please Re-Login')
+        return redirect('/') 
+    pending = DonorRequest.objects.filter(donor=request.user,status="Pending")
+    accepted = DonorRequest.objects.filter(donor=request.user,status="Accepted")
+    rejected = DonorRequest.objects.filter(donor=request.user,status="Rejected")
+    pl,al,rl = len(pending),len(accepted),len(rejected)
+    return render(request,"Donor/viewRequest.html",{'pending':pending,'accepted':accepted,'rejected':rejected,'pl':pl,'al':al,'rl':rl})
+
+def acceptRequest(request,rid):
+    if request.user.type!="Donor":
+        storage = messages.get_messages(request)
+        storage.used = True
+        messages.info(request,'Not Allowed. Please Re-Login')
+        return redirect('/') 
+    obj = DonorRequest.objects.get(id=rid)
+    obj.status="Accepted"
+    obj.save()
+    storage = messages.get_messages(request)
+    storage.used = True
+    messages.info(request,'Request Accepted')
+    return redirect('/dashboard') 
+    
+def rejectRequest(request,rid):
+    if request.user.type!="Donor":
+        storage = messages.get_messages(request)
+        storage.used = True
+        messages.info(request,'Not Allowed. Please Re-Login')
+        return redirect('/') 
+    obj = DonorRequest.objects.get(id=rid)
+    obj.status="Rejected"
+    obj.save()
+    storage = messages.get_messages(request)
+    storage.used = True
+    messages.info(request,'Request Rejected')
+    return redirect('/dashboard') 
+    

@@ -12,5 +12,9 @@ urlpatterns = [
     path('bookAppointment/<int:did>',views.bookAppointment,name="bookAppointment"),
     path('viewAppointment',views.viewAppointment,name="viewAppointment"),
     path('viewConsultation/<int:cid>',views.viewConsultation,name="viewConsultation"),
-    path('yourBill',views.yourBill,name="yourBill")
+    path('yourBill',views.yourBill,name="yourBill"),
+    path('searchDonors',views.searchDonors,name="searchDonors"),
+    path('filterDonors',views.filterDonors,name="filterDonors"),
+    path('requestDonor/<int:did>',views.requestDonor,name="requestDonor"),
+    path('showDonorRequest',views.showDonorRequest,name="showDonorRequest")
 ]

@@ -1,0 +1,68 @@
+{%extends "Patient/dashboard.html"%}
+{%block content%}
+<br>
+<form action="/patient/filterDonors" style="text-align: center;" method="GET" >
+    {%csrf_token%}
+    <div class="row">
+        <div class="col-sm-3">
+            <div class="form-group">
+                <label for="days_covid_negative">Days Covid Negative</label>
+                <input type="number" class="form-control" name="days_covid_negative" id="days_covid_negative">
+            </div>
+        </div>
+        <div class="col-sm-3">
+            <div class="form-group">
+                <label for="plasma_last_donated">Days after Plasma Donated</label>
+                <input type="text" class="form-control" name="plasma_last_donated" id="plasma_last_donated">
+            </div>
+        </div>
+        <div class="col-sm-3">
+            <div class="form-group">
+                <label for="blood_group">Blood Group</label>
+                <select name="blood_group" id="blood_group" class="form-control">
+                    <option value="">Select</option>
+                    <option value="A+">A+</option>
+                    <option value="A-">A-</option>
+                    <option value="B+">B+</option>
+                    <option value="B-">B-</option>                
+                    <option value="AB+">AB+</option>
+                    <option value="AB-">AB-</option>
+                    <option value="O+">O+</option>
+                    <option value="O-">O-</option>                
+                </select>
+            </div>
+        </div>
+        <div class="col-sm-3">
+            <div class="form-group"><br>
+                <input type="submit" value="Filter" class="btn btn-outline-success" />
+            </div>
+        </div>
+    </div>
+</form>        
+<div class="row">
+    {%if len == 0%}
+    <p style="text-align: center;">No Donors Available</p>
+    {%else%}
+    {%for item in obj%}
+    <div class="col-sm-4">
+        <div class="card-body">
+            <img class="card-img-top" src="{{item.photo.url}}" width="200px" height="400px" alt="Card image cap">
+            <p class="card-text">
+                <p>{{item.description}}</p>
+                <ul class="list-group">
+                    <li class="list-group-item">Days Covid Negative : {{item.days_covid_negative}}</li>
+                    <li class="list-group-item">Plasma Last Donated: {{item.plasma_last_donated}}</li>
+                    <li class="list-group-item">Blood Group : {{item.blood_group}}</li>
+                </ul>
+            </p>
+            <div class="row">
+                <div class="col-sm">
+                    <center><a href="/patient/requestDonor/{{item.user.id}}" class="btn btn-outline-info">Request Donor</a></center>
+                </div>
+            </div>
+        </div>
+    </div>
+    {%endfor%}
+    {%endif%}
+</div>
+{%endblock%}
