@@ -1,7 +1,8 @@
 from django.shortcuts import render,redirect
 from django.core.mail import send_mail
-from .models import Medicine
+from .models import Medicine,Order,Bill
 from django.contrib import messages
+from patient.models import Bill
 
 # Create your views here.
 def addMedicine(request):
@@ -76,3 +77,68 @@ def deleteMedicine(request,mid):
         storage.used = True
         messages.info(request,'Something went wrong. Try again later')
         return redirect('/')     
+
+def yourOrders(request):
+    pending = Order.objects.filter(status="Pending",ordered_to=request.user)
+    cancelled = Order.objects.filter(status="Cancelled",ordered_to=request.user)
+    rejected = Order.objects.filter(status="Rejected",ordered_to=request.user)
+    accepted = Order.objects.filter(status="Accepted",ordered_to=request.user)
+    shipped = Order.objects.filter(ordered_to= request.user,status="Shipped")
+    p_l,a_l,r_l,s_l,c_l = len(pending),len(accepted),len(rejected),len(shipped),len(cancelled)
+    return render(request,"Pharmacy/yourOrders.html",{'pending':pending,'accepted':accepted,'rejected':rejected,'shipped':shipped,'cancelled':cancelled,
+                        'pl':p_l,'rl':r_l,'al':a_l,'sl':s_l,'cl':c_l})
+
+
+def acceptOrder(request,oid):
+    if request.user.type!="Pharmacy":
+        storage = messages.get_messages(request)
+        storage.used = True
+        messages.info(request,'Not Allowed. Please Re-Login')
+        return redirect('/')     
+    obj = Order.objects.get(id=oid)
+    obj.status="Accepted"
+    obj.save()
+    storage = messages.get_messages(request)
+    storage.used = True
+    messages.info(request,'Order Accepted Successfully')
+    return redirect('/dashboard')     
+
+def rejectOrder(request,oid):
+    if request.user.type!="Pharmacy":
+        storage = messages.get_messages(request)
+        storage.used = True
+        messages.info(request,'Not Allowed. Please Re-Login')
+        return redirect('/')     
+    obj = Order.objects.get(id=oid)
+    obj.status="Rejected"
+    obj.save()
+    bill_id = obj.billing.id
+    Bill.objects.filter(id=bill_id).delete()
+    storage = messages.get_messages(request)
+    storage.used = True
+    messages.info(request,'Order Rejected Successfully')
+    return redirect('/dashboard')         
+
+def shipment(request,oid):
+    if request.user.type!="Pharmacy":
+        storage = messages.get_messages(request)
+        storage.used = True
+        messages.info(request,'Not Allowed. Please Re-Login')
+        return redirect('/') 
+    if request.method=="POST":
+        obj = Order.objects.get(id=oid)
+        myfiles = request.FILES
+        receipt = myfiles['receipt']
+        service = request.POST["service"]
+        tracking_id = request.POST["tracking_id"]
+        obj.status = "Shipped"
+        obj.receipt = receipt
+        obj.service = service
+        obj.tracking_id = tracking_id
+        obj.save()
+        storage = messages.get_messages(request)
+        storage.used = True
+        messages.info(request,'Order Updated Successfully')
+        return redirect('/dashboard')     
+    obj = Order.objects.get(id=oid)
+    return render(request,"Pharmacy/updateOrder.html",{'obj':obj})

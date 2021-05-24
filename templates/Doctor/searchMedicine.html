@@ -1,7 +1,7 @@
-{%extends "Patient/dashboard.html"%}
+{%extends "Doctor/dashboard.html"%}
 {%block content%}
 <br>
-<form action="/patient/filterMedicine" style="text-align: center;" method="GET" >
+<form action="/doctor/filterMedicine" style="text-align: center;" method="GET" >
     {%csrf_token%}
     <div class="row">
         <div class="col-sm-3">
@@ -49,7 +49,7 @@
             </p>
             <div class="row">
                 <div class="col-sm">
-                    <center><a href="/patient/placeOrder/{{item.id}}" class="btn btn-outline-info">Place Order</a></center>
+                    <center><a href="/doctor/placeOrder/{{item.id}}" class="btn btn-outline-info">Place Order</a></center>
                 </div>
             </div>
         </div>

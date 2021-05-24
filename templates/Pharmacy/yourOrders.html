@@ -1,0 +1,113 @@
+{%extends "Pharmacy/dashboard.html"%}
+{%load static%}
+{%block content%}
+<link rel="stylesheet" href="{%static 'css/home.css'%}">
+<p class="aboutText">Pending Orders</p>
+{% if pl == 0%}
+<p>No Pending Orders</p>
+{%else%}
+<table class="table">
+    <tr>
+        <th>Medicine</th>
+        <th>Ordered_by</th>
+        <th>Ordered Date</th>
+        <th>Amount</th>
+        <th colspan="2">Status</th>
+    </tr>
+    {%for item in pending%}
+    <tr>
+        <td>{{item.medicine.name}}</td>
+        <td>{{item.ordered_by.first_name}}</td>
+        <td>{{item.ordered_date}}</td>
+        <td>{{item.billing.amount}}</td>
+        <td><a href="/pharmacy/acceptOrder/{{item.id}}" class="btn btn-outline-primary">Accept Order</a></td>
+        <td><a href="/pharmacy/rejectOrder/{{item.id}}" class="btn btn-outline-danger">Reject</a></td>
+    </tr>
+    {%endfor%}
+</table>
+{%endif%}
+<p class="aboutText">Accepted Orders</p>
+{% if al == 0%}
+<p>No New Orders Accepted</p>
+{%else%}
+<table class="table">
+    <tr>
+        <th>Medicine</th>
+        <th>Ordered_by</th>
+        <th>Ordered Date</th>
+        <th>Update Shipment Details</th>
+    </tr>
+    {%for item in accepted%}
+    <tr>
+        <td>{{item.medicine.name}}</td>
+        <td>{{item.ordered_by.first_name}}</td>
+        <td>{{item.ordered_date}}</td>
+        <td><a href="/pharmacy/shipment/{{item.id}}" class="btn btn-outline-primary">Update Shipment</a></td>
+    </tr>
+    {%endfor%}
+</table>
+{%endif%}
+<p class="aboutText">Cancelled Orders</p>
+{% if cl == 0%}
+<p>No Orders Cancelled</p>
+{%else%}
+<table class="table">
+    <tr>
+        <th>Medicine</th>
+        <th>Ordered_by</th>
+        <th>Ordered Date</th>
+    </tr>
+    {%for item in cancelled%}
+    <tr>
+        <td>{{item.medicine.name}}</td>
+        <td>{{item.ordered_by.first_name}}</td>
+        <td>{{item.ordered_date}}</td>
+    </tr>
+    {%endfor%}
+</table>
+{%endif%}
+<p class="aboutText">Rejected Orders</p>
+{% if rl == 0%}
+<p>No Rejected Orders</p>
+{%else%}
+<table class="table">
+    <tr>
+        <th>Medicine</th>
+        <th>Ordered_by</th>
+        <th>Ordered Date</th>
+    </tr>
+    {%for item in rejected%}
+    <tr>
+        <td>{{item.medicine.name}}</td>
+        <td>{{item.ordered_by.first_name}}</td>
+        <td>{{item.ordered_date}}</td>
+    </tr>
+    {%endfor%}
+</table>
+{%endif%}
+<p class="aboutText">Shipped Orders</p>
+{% if sl == 0%}
+<p>No Orders Shipped</p>
+{%else%}
+<table class="table">
+    <tr>
+        <th>Medicine</th>
+        <th>Ordered_by</th>
+        <th>Ordered Date</th>
+        <th>Shipment Service</th>
+        <th>Tracking ID</th>
+        <th>Receipt</th>
+    </tr>
+    {%for item in shipped%}
+    <tr>
+        <td>{{item.medicine.name}}</td>
+        <td>{{item.ordered_by.first_name}}</td>
+        <td>{{item.ordered_date}}</td>
+        <td>{{item.service}}</td>
+        <td>{{item.tracking_id}}</td>
+        <td><a href="{{item.receipt.url}}" class="btn btn-link">View Shipment</a></td>
+    </tr>
+    {%endfor%}
+</table>
+{%endif%}
+{%endblock%}

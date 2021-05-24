@@ -1,0 +1,35 @@
+{%extends "Pharmacy/dashboard.html"%}
+{%block content%}
+<form action="/pharmacy/shipment/{{obj.id}}" method="POST" enctype="multipart/form-data">
+    {%csrf_token%}
+    <div class="row">
+        <div class="col-sm">
+            <div class="form-group">
+                <label for="medicine_by">Order</label>
+                <p>{{obj.ordered_by.first_name}},{{obj.medicine.name}}</p>
+            </div>
+        </div>
+        <div class="col-sm">
+            <div class="form-group">
+                <label for="service">Service</label>
+                <input type="text" name="service" id="service" class="form-control" required>
+            </div>
+        </div>
+    </div>    
+    <div class="row">
+        <div class="col-sm">
+            <div class="form-group">
+                <label for="tracking_id">Tracking ID</label>
+                <input type="text" name="tracking_id" id="tracking_id" class="form-control" required>
+            </div>
+        </div>
+        <div class="col-sm">
+            <div class="form-group">
+                <label for="receipt">Receipt - from Courier Partner</label>
+                <input type="file" name="receipt" id="receipt" class="form-control" required>
+            </div>
+        </div>
+    </div>
+    <input type="submit" value="Update Order" class="btn btn-outline-success">
+</form>
+{%endblock%}

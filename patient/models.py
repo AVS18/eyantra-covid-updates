@@ -5,3 +5,4 @@ class Bill(models.Model):
     amount = models.IntegerField()
     description = models.CharField(max_length=2048)
     user = models.ForeignKey(User,on_delete=models.CASCADE)
+    status = models.CharField(max_length=10,choices=(("Paid","Paid"),("Pending","Pending")),default="Pending")
