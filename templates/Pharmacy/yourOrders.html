@@ -35,6 +35,7 @@
         <th>Medicine</th>
         <th>Ordered_by</th>
         <th>Ordered Date</th>
+        <th>Address</th>
         <th>Update Shipment Details</th>
     </tr>
     {%for item in accepted%}
@@ -42,6 +43,7 @@
         <td>{{item.medicine.name}}</td>
         <td>{{item.ordered_by.first_name}}</td>
         <td>{{item.ordered_date}}</td>
+        <td>{{item.ordered_by.profile.address1}},{{item.ordered_by.profile.address2}},{{item.ordered_by.profile.city}},{{item.ordered_by.profile.state}},{{item.ordered_by.profile.pincode}}</td>
         <td><a href="/pharmacy/shipment/{{item.id}}" class="btn btn-outline-primary">Update Shipment</a></td>
     </tr>
     {%endfor%}
