@@ -41,7 +41,8 @@ INSTALLED_APPS = [
     'doctor',
     'donor',
     'patient',
-    'pharmacy'
+    'pharmacy',
+    'google_translate'
 ]
 
 CORS_ORIGIN_WHITELIST = [

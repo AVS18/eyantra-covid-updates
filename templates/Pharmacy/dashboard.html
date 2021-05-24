@@ -1,4 +1,6 @@
 {%load static%}
+{% load google_translate %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -36,7 +38,7 @@
     <div id="page-content-wrapper">
       <nav class="navbar navbar-expand-lg navbar-light bg-transparent border-bottom">
         <button class="btn btn-link" id="menu-toggle"><i class="fa fa-bars" aria-hidden="true"></i></button>
-        <p class="justify-content-end ml-auto" style="font-style: oblique;">{{request.user.username}}</p>
+        <p class="justify-content-end ml-auto" style="font-style: oblique;">{% google_translate type='vertical' language='en' %} {{request.user.username}}</p>
       </nav>
       <div class="container-fluid">
             {% if messages %}
