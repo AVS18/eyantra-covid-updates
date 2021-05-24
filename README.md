@@ -18,4 +18,5 @@ SaveLife is a web based application consisting an interaction between doctors, c
 3. Use, python manage.py runserver to start the server and setup the web application.
 
 -> If, you are facing any issue, we deployed the application at covidsave.herokuapp.com. Please navigate and test the application.
+
 Update1 : Cowin slot won't work  in deployed version as we need to buy user agent identification in heroku for processing requests.
