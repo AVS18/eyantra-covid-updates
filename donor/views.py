@@ -130,6 +130,6 @@ def addDonorProfile(request):
             return redirect('/dashboard')
     profile = PlasmaProfile.objects.filter(user=request.user)
     if len(profile)==0:
-        return render(request,"Doctor/addDonorProfile.html")
+        return render(request,"Donor/addDonorProfile.html")
     else:
-        return render(request,"Doctor/addDonorProfile.html",{'profile':profile[0]})
+        return render(request,"Donor/addDonorProfile.html",{'profile':profile[0]})
