@@ -159,7 +159,12 @@ def openAppointment(request,aid):
         obj = Appointment.objects.get(id = aid)
         obj.status = "Open"
         obj.save()
-        consultation = Consultation.objects.create(appointment=obj)
+        consultation = Consultation.objects.filter(appointment=obj)
+        if len(consultation)!=0:
+            consultation[0].status="Open"
+            consultation[0].save()
+        else:
+            Consultation.objects.create(appointment=obj)
         storage = messages.get_messages(request)
         storage.used = True
         messages.info(request,'Appointment Opened Successfully')
